@@ -1,0 +1,9 @@
+version: 1
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: "service-b"
+        LoadBalancerInfo:
+          ContainerName: "service-b"
+          ContainerPort: 5001

@@ -1,0 +1,40 @@
+name: Deploy to ECS Fargate
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Build and Push Docker Image to ECR
+      run: |
+        cd service-a
+        docker build -t service-a .
+        docker tag service-a:latest <your-ecr-url>/service-a:latest
+        aws ecr get-login-password | docker login --username AWS --password-stdin <your-ecr-url>
+        docker push <your-ecr-url>/service-a:latest
+
+    - name: Register Task Definition
+      run: |
+        aws ecs register-task-definition --cli-input-json file://service-a/ecs-task-def.json
+
+    - name: Deploy via CodeDeploy
+      run: |
+        aws deploy create-deployment \
+          --application-name service-a \
+          --deployment-group-name service-a-bluegreen \
+          --deployment-config-name CodeDeployDefault.ECSAllAtOnce \
+          --github-location repository=<your-user>/Bluegreen-deployment,commitId=${{ github.sha }}
