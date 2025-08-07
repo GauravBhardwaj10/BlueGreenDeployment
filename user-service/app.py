@@ -11,7 +11,7 @@ def health_check():
     return "OK", 200
 
 @app.route("/users")
-def get_user(username):
+def get_user():
     return "Gaurav"
 
 if __name__ == "__main__":
