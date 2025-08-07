@@ -4,7 +4,7 @@
     {
       "name": "service-a",
       "image": "<your-ecr-url>/service-a:latest",
-      "portMappings": [{ "containerPort": 5000 }],
+      "portMappings": [{ "containerPort": 8081 }],
       "memory": 512,
       "cpu": 256,
       "essential": true

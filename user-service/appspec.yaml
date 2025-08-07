@@ -5,5 +5,5 @@ Resources:
       Properties:
         TaskDefinition: "service-a"
         LoadBalancerInfo:
-          ContainerName: "service-a"
-          ContainerPort: 5000
+          ContainerName: "service-b"
+          ContainerPort: 8081
